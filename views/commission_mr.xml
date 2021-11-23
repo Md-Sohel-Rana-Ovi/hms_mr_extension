@@ -7,6 +7,11 @@
             <div  name="button_box" position="inside">
                 <button class="oe_stat_button" type="object" name="commission_action" icon="fa-list" string="Commissions" groups="acs_hms_commission.group_acs_commission_user"/>
             </div>
+
+            <xpath expr="//field[@name='gender']" position="after">
+                <field name="patient_id"/>
+            </xpath>
+
             <xpath expr="//notebook" position="inside">
                 <page name="commission" string="Business Commissions MR" groups="acs_hms_commission.group_acs_commission_user">
                     <group>
@@ -34,6 +39,18 @@
                 </page>
             </xpath>
 
+        </field>
+    </record>
+
+    <!--Acs Hms Commission -->
+     <record id="acs_hms_commission_form_view" model="ir.ui.view">
+        <field name="name">acs.hms.commission.form</field>
+        <field name="model">acs.hms.commission</field>
+         <field name="inherit_id" ref="acs_hms_commission.acs_hms_commission_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="patient"/>
+            </xpath>
         </field>
     </record>
 </odoo>

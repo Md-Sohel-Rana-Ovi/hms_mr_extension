@@ -19,6 +19,7 @@ class ResPartnerExtension(models.Model):
 class MedicalRepresentativeExtension(models.Model):
     _inherit = 'medical.representative'
     _description = "Medical Representative"
+    patient_id = fields.Many2one('hms.patient', string='Patient Name')
 
 
     def commission_action(self):
@@ -38,4 +39,8 @@ class Appointment(models.Model):
             rec.invoice_id.onchange_ref_physician()
             rec.invoice_id.onchange_physician()
         return res
+
+class HMSCommissionExtension(models.Model):
+    _inherit = 'acs.hms.commission'
+    patient = fields.Many2one('hms.patient', string='Patient Name')
 
