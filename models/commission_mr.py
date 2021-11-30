@@ -48,18 +48,14 @@ class HMSCommissionExtension(models.Model):
 
     @api.onchange('invoice_id', 'partner_id')
     def total_commission_amount(self):
-        product_ids = self.env['account.move'].sudo().search([])
-        product_sum=0
-        for line in product_ids.invoice_line_ids:
-            product_sum=line.price_unit
-        print(product_sum)
-            # commission_percentage = self.env['acs.commission.rule'].sudo().search([])
-            # for commission in commission_percentage:
-            #     self.total_commission  = line.price_unit * commission.percentage / 100
-            # print("ssssssssss", self.total_commission)
-            # if line.product_id:
-            #     matching_rule = False
-            #     product_tmpl_id = line.product_id.product_tmpl_id.id
-            #     product_categ_id = line.product_id.categ_id.id
-            #     print(product_tmpl_id)
+        print(self.invoice_id.name)
+        print(self.partner_id.commission_rule_ids)
 
+        total = 0
+        for invoice_line in self.invoice_id.invoice_line_ids:
+            for commision_rule in self.partner_id.commission_rule_ids:
+
+                if invoice_line.product_id.product_tmpl_id.id == commision_rule.product_id.id:
+                    print("Something found")
+                    total += (invoice_line.price_subtotal* commision_rule.percentage)/100
+        self.total_commission = total
