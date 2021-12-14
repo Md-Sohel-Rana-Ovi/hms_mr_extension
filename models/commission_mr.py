@@ -9,7 +9,6 @@ class ResPartnerExtension(models.Model):
     provide_commission = fields.Boolean('Give Commission')
     commission_percentage = fields.Float('Commission Percentage')
     commission_rule_ids = fields.One2many("acs.commission.rule", "partner_id", string="Commission Rules")
-
     def commission_action(self):
         action = self.env["ir.actions.actions"]._for_xml_id("acs_hms_commission.acs_hms_commission_action")
         action['domain'] = [('partner_id', '=', self.id)]
@@ -44,7 +43,7 @@ class Appointment(models.Model):
 class HMSCommissionExtension(models.Model):
     _inherit = 'acs.hms.commission'
     patient = fields.Many2one('hms.patient', string='Patient Name')
-    total_commission = fields.Float(string="Total Amount")
+    total_commission = fields.Float(string="Commission Amount")
 
     @api.onchange('invoice_id', 'partner_id')
     def total_commission_amount(self):
@@ -59,3 +58,33 @@ class HMSCommissionExtension(models.Model):
                     print("Something found")
                     total += (invoice_line.price_subtotal* commision_rule.percentage)/100
         self.total_commission = total
+        print("sohel")
+        
+
+    @api.onchange('invoice_id', 'partner_id','patient')
+    def total_commission_amount(self):
+       print(self.invoice_id.name)
+       print(self.partner_id.commission_rule_ids)
+ 
+       total = 0
+       for invoice_line in self.invoice_id.invoice_line_ids:
+           for commision_rule in self.patient.commission_rule_ids:
+ 
+               if invoice_line.product_id.product_tmpl_id.id == commision_rule.product_id.id:
+                   print("Something found")
+                   total += (invoice_line.price_subtotal* commision_rule.percentage)/100
+       self.total_commission = total
+       print("sohel")
+
+
+# class HmsAccountMoveExtension(models.Model):
+#     _inherit = 'account.move'
+#     reffer_physician = fields.Many2one('hms.physician', string='Reffer Physician')
+#     reffer_discount = fields.Float(string="Physician Reffer Discount")
+
+# class AccountMoveExtension(models.Model):
+#     _inherit = 'account.move'
+
+   
+#     physician_id = fields.Many2one('hms.physician', string='Reffer Physician') 
+#     discount = fields.Float(string="Physician Reffer Discount")
